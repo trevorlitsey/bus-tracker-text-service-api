@@ -4,6 +4,7 @@ import com.trevorlitsey.poolpractice.domain.CreateUserRequest;
 import com.trevorlitsey.poolpractice.domain.User;
 import com.trevorlitsey.poolpractice.repositories.UserRepository;
 import com.trevorlitsey.poolpractice.types.Permission;
+import com.trevorlitsey.poolpractice.utils.PasswordConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -23,6 +24,9 @@ public class UserDetailsService implements org.springframework.security.core.use
     @Autowired
     MongoOperations mongoOperations;
 
+    @Autowired
+    PasswordConfig passwordConfig;
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = mongoOperations.findOne(
@@ -32,15 +36,15 @@ public class UserDetailsService implements org.springframework.security.core.use
         );
 
         if  (user == null) {
-            throw new UsernameNotFoundException("Email not found");
+            throw new UsernameNotFoundException(String.format("Email %s not found", username));
         }
 
-        return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(), new ArrayList<>());
+        return new org.springframework.security.core.userdetails.User(user.getEmail(), passwordConfig.encode(user.getPassword()), new ArrayList<>());
     }
 
     public UserDetails createUser(CreateUserRequest createUserRequest) {
-        User user = new User(createUserRequest.getUsername(), createUserRequest.getPassword(), createUserRequest.getPhoneNumber(), List.of(Permission.USER));
+        User user = new User(createUserRequest.getUsername(), passwordConfig.encode(createUserRequest.getPassword()) , createUserRequest.getPhoneNumber(), List.of(Permission.USER));
         userRepository.insert(user);
-        return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(), new ArrayList<>());
+        return new org.springframework.security.core.userdetails.User(user.getEmail(),  user.getPassword(), new ArrayList<>());
     }
 }

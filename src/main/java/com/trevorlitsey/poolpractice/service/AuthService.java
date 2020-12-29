@@ -24,10 +24,10 @@ public class AuthService {
     public LoginResponse login(LoginRequest loginRequest) {
         // TODO: set custom message if method throws?
         authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword())
+                new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword())
         );
 
-        final UserDetails userDetails = userDetailsService.loadUserByUsername(loginRequest.getUsername());
+        final UserDetails userDetails = userDetailsService.loadUserByUsername(loginRequest.getEmail());
 
         final String jwt = jwtUtil.generateToken(userDetails);
 
