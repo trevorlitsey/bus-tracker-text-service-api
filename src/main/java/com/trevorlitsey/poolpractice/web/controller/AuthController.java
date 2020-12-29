@@ -1,7 +1,8 @@
 package com.trevorlitsey.poolpractice.web.controller;
 
-import com.trevorlitsey.poolpractice.domain.AuthRequest;
-import com.trevorlitsey.poolpractice.domain.AuthResponse;
+import com.trevorlitsey.poolpractice.domain.CreateUserRequest;
+import com.trevorlitsey.poolpractice.domain.LoginRequest;
+import com.trevorlitsey.poolpractice.domain.LoginResponse;
 import com.trevorlitsey.poolpractice.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -13,7 +14,12 @@ public class AuthController {
     AuthService authService;
 
      @PostMapping("/login")
-     public AuthResponse login(@RequestBody AuthRequest authRequest){
-        return authService.login(authRequest);
+     public LoginResponse login(@RequestBody LoginRequest loginRequest){
+        return authService.login(loginRequest);
+    }
+
+    @PostMapping("/create-user")
+    public LoginResponse createAccount(@RequestBody CreateUserRequest createUserRequest) {
+         return authService.createUser(createUserRequest);
     }
 }

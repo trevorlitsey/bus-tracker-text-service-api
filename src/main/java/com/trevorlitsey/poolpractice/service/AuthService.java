@@ -1,7 +1,8 @@
 package com.trevorlitsey.poolpractice.service;
 
-import com.trevorlitsey.poolpractice.domain.AuthRequest;
-import com.trevorlitsey.poolpractice.domain.AuthResponse;
+import com.trevorlitsey.poolpractice.domain.CreateUserRequest;
+import com.trevorlitsey.poolpractice.domain.LoginRequest;
+import com.trevorlitsey.poolpractice.domain.LoginResponse;
 import com.trevorlitsey.poolpractice.utils.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -20,16 +21,21 @@ public class AuthService {
     @Autowired
     private JwtUtil jwtUtil;
 
-    public AuthResponse login(AuthRequest authRequest) {
+    public LoginResponse login(LoginRequest loginRequest) {
         // TODO: set custom message if method throws?
         authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword())
+                new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword())
         );
 
-        final UserDetails userDetails = userDetailsService.loadUserByUsername(authRequest.getUsername());
+        final UserDetails userDetails = userDetailsService.loadUserByUsername(loginRequest.getUsername());
 
         final String jwt = jwtUtil.generateToken(userDetails);
 
-        return new AuthResponse(jwt);
+        return new LoginResponse(jwt);
+    }
+
+    public LoginResponse createUser(CreateUserRequest createUserRequest) {
+        userDetailsService.createUser(createUserRequest);
+        return login(new LoginRequest(createUserRequest.getUsername(), createUserRequest.getPassword()));
     }
 }
