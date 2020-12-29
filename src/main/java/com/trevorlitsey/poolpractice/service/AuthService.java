@@ -12,13 +12,13 @@ import org.springframework.stereotype.Service;
 @Service
 public class AuthService {
     @Autowired
-    AuthenticationManager authenticationManager;
+    private AuthenticationManager authenticationManager;
 
     @Autowired
-    UserDetailsService userDetailsService;
+    private UserDetailsService userDetailsService;
 
     @Autowired
-    JwtUtil jwtUtil;
+    private JwtUtil jwtUtil;
 
     public AuthResponse login(AuthRequest authRequest) {
         // TODO: set custom message if method throws?

@@ -14,7 +14,7 @@ import java.util.Optional;
 @Service
 public class GroupService {
     @Autowired
-    GroupRepository groupRepository;
+    private GroupRepository groupRepository;
 
     public List<Group> findAllGroups() {
         return groupRepository.findAll();
