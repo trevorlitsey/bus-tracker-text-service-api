@@ -4,6 +4,9 @@ import com.trevorlitsey.poolpractice.domain.Group;
 import com.trevorlitsey.poolpractice.domain.Route;
 import com.trevorlitsey.poolpractice.repositories.GroupRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoOperations;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -16,27 +19,30 @@ public class GroupService {
     @Autowired
     private GroupRepository groupRepository;
 
-    public List<Group> findAllGroups() {
-        return groupRepository.findAll();
+    @Autowired
+    MongoOperations mongoOperations;
+
+    public List<Group> findAllGroups(String userId) {
+        return mongoOperations.find(
+                Query.query(Criteria.where("userId").is(userId)),
+                Group.class,
+                "group"
+        );
     }
 
-    public Group createGroup(Group group) {
+    public Group createGroup(Group group, String userId) {
         if (group.getName() == null) {
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST, "Group must have a name"
             );
         }
 
-        if (group.getUserId() == null) {
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST, "Group must have a user id"
-            );
-        }
+        group.setUserId(userId);
 
         return groupRepository.insert(group);
     }
 
-    public Group patchRoutine(String id, Group group) {
+    public Group patchRoutine(String id, Group group, String userId) {
         Optional<Group> optionalRoutineToUpdate = groupRepository.findById(id);
 
         if (optionalRoutineToUpdate.isEmpty()) {
@@ -66,7 +72,15 @@ public class GroupService {
         return groupRepository.save(groupToUpdate);
     }
 
-    public void deleteRoutine(String id) {
+    public void deleteGroup(String id, String userId) {
+        Optional<Group> groupToDelete = groupRepository.findById(id);
+
+        if (groupToDelete.isEmpty() || !groupToDelete.get().getUserId().equals(userId) ) {
+            throw new ResponseStatusException(
+                    HttpStatus.UNAUTHORIZED, String.format("User not authorized to delete group with id %s", id)
+            );
+        }
+
         groupRepository.deleteById(id);
     }
 }

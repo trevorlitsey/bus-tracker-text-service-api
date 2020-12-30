@@ -1,6 +1,5 @@
 package com.trevorlitsey.poolpractice.domain;
 
-import com.mongodb.lang.NonNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

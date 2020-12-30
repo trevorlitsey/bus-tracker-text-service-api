@@ -2,49 +2,55 @@ package com.trevorlitsey.poolpractice.service;
 
 import com.trevorlitsey.poolpractice.domain.CreateUserRequest;
 import com.trevorlitsey.poolpractice.domain.User;
-import com.trevorlitsey.poolpractice.repositories.UserRepository;
-import com.trevorlitsey.poolpractice.types.Permission;
 import com.trevorlitsey.poolpractice.utils.PasswordConfig;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.mongodb.core.MongoOperations;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
-import java.util.List;
 
 @Service
 public class UserDetailsService implements org.springframework.security.core.userdetails.UserDetailsService {
     @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    MongoOperations mongoOperations;
-
-    @Autowired
     PasswordConfig passwordConfig;
+
+    @Autowired
+    UserService userService;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = mongoOperations.findOne(
-                Query.query(Criteria.where("email").is(username)),
-                User.class,
-                "user"
-        );
+        User user = userService.findUserByEmail(username);
 
-        if  (user == null) {
+        if (user == null) {
             throw new UsernameNotFoundException(String.format("Email %s not found", username));
         }
 
-        return new org.springframework.security.core.userdetails.User(user.getEmail(), passwordConfig.encode(user.getPassword()), new ArrayList<>());
+        return new org.springframework.security.core.userdetails.User(
+                user.getEmail(),
+                user.getPassword(),
+                new ArrayList<>()
+        );
     }
 
     public UserDetails createUser(CreateUserRequest createUserRequest) {
-        User user = new User(createUserRequest.getUsername(), passwordConfig.encode(createUserRequest.getPassword()) , createUserRequest.getPhoneNumber(), List.of(Permission.USER));
-        userRepository.insert(user);
-        return new org.springframework.security.core.userdetails.User(user.getEmail(),  user.getPassword(), new ArrayList<>());
+        User existingUserWithEmail = userService.findUserByEmail(createUserRequest.getEmail());
+
+        if (existingUserWithEmail != null) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST, "Email already registered"
+            );
+        }
+
+        CreateUserRequest createUserRequestWithEncryptedPassword = new CreateUserRequest(
+                createUserRequest.getEmail(),
+                passwordConfig.encode(createUserRequest.getPassword()),
+                createUserRequest.getPhoneNumber()
+        );
+
+        User user = userService.createUser(createUserRequestWithEncryptedPassword);
+        return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(), new ArrayList<>());
     }
 }

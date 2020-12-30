@@ -12,30 +12,28 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class AuthService {
-    @Autowired
-    private AuthenticationManager authenticationManager;
+  @Autowired
+  private AuthenticationManager authenticationManager;
 
-    @Autowired
-    private UserDetailsService userDetailsService;
+  @Autowired
+  private UserDetailsService userDetailsService;
 
-    @Autowired
-    private JwtUtil jwtUtil;
+  @Autowired
+  private JwtUtil jwtUtil;
 
-    public LoginResponse login(LoginRequest loginRequest) {
-        // TODO: set custom message if method throws?
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword())
-        );
+  public LoginResponse login(LoginRequest loginRequest) {
+    authenticationManager
+        .authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
 
-        final UserDetails userDetails = userDetailsService.loadUserByUsername(loginRequest.getEmail());
+    final UserDetails userDetails = userDetailsService.loadUserByUsername(loginRequest.getEmail());
 
-        final String jwt = jwtUtil.generateToken(userDetails);
+    final String jwt = jwtUtil.generateToken(userDetails);
 
-        return new LoginResponse(jwt);
-    }
+    return new LoginResponse(jwt);
+  }
 
-    public LoginResponse createUser(CreateUserRequest createUserRequest) {
-        userDetailsService.createUser(createUserRequest);
-        return login(new LoginRequest(createUserRequest.getUsername(), createUserRequest.getPassword()));
-    }
+  public LoginResponse createUser(CreateUserRequest createUserRequest) {
+    userDetailsService.createUser(createUserRequest);
+    return login(new LoginRequest(createUserRequest.getEmail(), createUserRequest.getPassword()));
+  }
 }
