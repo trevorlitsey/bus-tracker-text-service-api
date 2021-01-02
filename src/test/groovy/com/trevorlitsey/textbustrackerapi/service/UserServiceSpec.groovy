@@ -6,6 +6,7 @@ import com.trevorlitsey.textbustrackerapi.domain.users.CreateAccountRequest
 import com.trevorlitsey.textbustrackerapi.domain.users.User
 import com.trevorlitsey.textbustrackerapi.repositories.UserRepository
 import com.trevorlitsey.textbustrackerapi.types.Permission
+import org.mockito.Mock
 import org.springframework.data.mongodb.core.MongoOperations
 import org.springframework.data.mongodb.core.query.Criteria
 import org.springframework.data.mongodb.core.query.Query

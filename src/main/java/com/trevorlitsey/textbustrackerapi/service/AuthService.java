@@ -34,7 +34,7 @@ public class AuthService {
   }
 
   public AuthenticateResponse createAccount(CreateAccountRequest createAccountRequest) {
-    UserDetails userDetails=userDetailsService.createUser(createAccountRequest);
+    UserDetails userDetails = userDetailsService.createUser(createAccountRequest);
     return authenticate(new AuthenticateRequest(userDetails.getUsername(), createAccountRequest.getPassword()));
   }
 
