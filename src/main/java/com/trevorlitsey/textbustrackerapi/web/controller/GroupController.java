@@ -36,8 +36,8 @@ public class GroupController {
     }
 
     @PatchMapping("/{id}")
-    public Group putGroup(@RequestHeader(name = "Authorization") String authToken, @PathVariable String id, @RequestBody Group group) {
-        return groupService.patchRoutine(id, group, authUtils.getUserIdFromToken(authToken));
+    public Group patchGroup(@RequestHeader(name = "Authorization") String authToken, @PathVariable String id, @RequestBody Group group) {
+        return groupService.patchGroup(id, group, authUtils.getUserIdFromToken(authToken));
     }
 
     @DeleteMapping("/{id}")

@@ -5,6 +5,7 @@ import com.trevorlitsey.textbustrackerapi.constants.GroupFields;
 import com.trevorlitsey.textbustrackerapi.domain.groups.Group;
 import com.trevorlitsey.textbustrackerapi.domain.groups.Route;
 import com.trevorlitsey.textbustrackerapi.repositories.GroupRepository;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -58,7 +59,7 @@ public class GroupService {
         return groupRepository.insert(group);
     }
 
-    public Group patchRoutine(String id, Group group, String userId) {
+    public Group patchGroup (String id, Group group, String userId) {
         Optional<Group> optionalRoutineToUpdate = groupRepository.findById(id);
 
         if (optionalRoutineToUpdate.isEmpty()) {
@@ -67,7 +68,20 @@ public class GroupService {
             );
         }
 
-        Group groupToUpdate = optionalRoutineToUpdate.get();
+        Group existingGroup = optionalRoutineToUpdate.get();
+
+        if (!existingGroup.getUserId().equals(userId)) {
+            throw new ResponseStatusException(
+                    HttpStatus.UNAUTHORIZED, String.format("User not allowed to modify group with id", id)
+            );
+        }
+
+        // TODO: reject if userId from group does not match userId from token
+
+
+        Group groupToUpdate = new Group();
+
+        BeanUtils.copyProperties(existingGroup, groupToUpdate);
 
         String name = group.getName();
         List<Route> routes = group.getRoutes();
@@ -91,7 +105,14 @@ public class GroupService {
     public void deleteGroup(String id, String userId) {
         Optional<Group> groupToDelete = groupRepository.findById(id);
 
-        if (groupToDelete.isEmpty() || !groupToDelete.get().getUserId().equals(userId) ) {
+        if (groupToDelete.isEmpty()) {
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND, "Group not found"
+            );
+        }
+
+
+        if (!groupToDelete.get().getUserId().equals(userId) ) {
             throw new ResponseStatusException(
                     HttpStatus.UNAUTHORIZED, String.format("User not authorized to delete group with id %s", id)
             );
