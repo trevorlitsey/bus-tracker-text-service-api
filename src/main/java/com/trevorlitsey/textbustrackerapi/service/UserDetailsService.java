@@ -16,6 +16,9 @@ import java.util.ArrayList;
 @Service
 public class UserDetailsService implements org.springframework.security.core.userdetails.UserDetailsService {
     @Autowired
+    GroupService groupService;
+
+    @Autowired
     PasswordConfig passwordConfig;
 
     @Autowired
@@ -65,5 +68,6 @@ public class UserDetailsService implements org.springframework.security.core.use
         }
 
         userService.deleteUser(deleteAccountRequest.getUserId());
+        groupService.deleteUserGroups(userId);
     }
 }

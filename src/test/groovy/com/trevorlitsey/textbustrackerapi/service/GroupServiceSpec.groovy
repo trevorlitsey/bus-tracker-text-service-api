@@ -23,7 +23,7 @@ class GroupServiceSpec extends Specification {
     def 'should find all groups'() {
         setup:
         def userId = '123'
-        def groups = List.of(new Group())
+        def groups = List.of(Group.builder().build())
 
         when:
         def result = groupService.findAllGroups(userId)
@@ -52,17 +52,8 @@ class GroupServiceSpec extends Specification {
 
         Group insertedGroup
 
-        def expectedGroup = new Group()
-        expectedGroup.setUserId(userId)
-        expectedGroup.setName(name)
-        expectedGroup.setRoutes(routes)
-        expectedGroup.setKeywords(keywords)
-
         when:
-        def groupRequest = new Group()
-        groupRequest.setName(name)
-        groupRequest.setRoutes(routes)
-        groupRequest.setKeywords(keywords)
+        def groupRequest = Group.builder().name(name).routes(routes).keywords(keywords).build()
         def result = groupService.createGroup(groupRequest, userId)
 
         then:
@@ -84,7 +75,7 @@ class GroupServiceSpec extends Specification {
         result.getKeywords() == keywords
 
         when: 'name is missing'
-        def missingNameGroupRequest = new Group()
+        def missingNameGroupRequest = Group.builder().build()
         missingNameGroupRequest.setRoutes(routes)
         missingNameGroupRequest.setKeywords(keywords)
         def missingNameResult = groupService.createGroup(missingNameGroupRequest, userId)
@@ -98,10 +89,7 @@ class GroupServiceSpec extends Specification {
         missingNameError.getMessage().contains('Group must have a name')
 
         when: 'group already exists'
-        def groupAlreadyExistsRequest = new Group()
-        groupAlreadyExistsRequest.setRoutes(routes)
-        groupAlreadyExistsRequest.setName(name)
-        groupAlreadyExistsRequest.setKeywords(keywords)
+        def groupAlreadyExistsRequest = Group.builder().routes(routes).name(name).keywords(keywords).build()
         def groupAlreadyExistsResult = groupService.createGroup(groupAlreadyExistsRequest, userId)
 
         then: 'should throw error'
@@ -109,7 +97,7 @@ class GroupServiceSpec extends Specification {
                 Query.query((Criteria.where(GroupFields.NAME).is(name) & GroupFields.USER_ID).is(userId)),
                 Group.class,
                 Collections.GROUP
-        ) >> new Group()
+        ) >> Group.builder().build()
         0 * groupRepository.insert
         groupAlreadyExistsResult == null
         def groupAlreadyExistsError = thrown(ResponseStatusException)
@@ -133,18 +121,12 @@ class GroupServiceSpec extends Specification {
         def existingName = 'not foo'
         def existingRoutes = List.of()
         def existingKeywords = List.of()
-        def existingGroup = new Group()
-        existingGroup.setName(existingName)
-        existingGroup.setRoutes(existingRoutes)
-        existingGroup.setUserId(userId)
-        existingGroup.setKeywords(existingKeywords)
+        def existingGroup = Group.builder().name(existingName).routes(existingRoutes).userId(userId).keywords(existingKeywords).build()
         Group updatedGroup
-        def groupWithWrongUserId = new Group()
-        groupWithWrongUserId.setUserId('not123')
+        def groupWithWrongUserId = Group.builder().userId('not123').build()
 
         when: 'should patch name'
-        def groupWithName = new Group()
-        groupWithName.setName(newName)
+        def groupWithName = Group.builder().name(newName).build()
         groupService.patchGroup(groupId, groupWithName, userId)
 
         then:
@@ -156,8 +138,7 @@ class GroupServiceSpec extends Specification {
         noExceptionThrown()
 
         when: 'should patch routes'
-        def groupWithRoutes = new Group()
-        groupWithRoutes.setRoutes(newRoutes)
+        def groupWithRoutes = Group.builder().routes(newRoutes).build()
         groupService.patchGroup(groupId, groupWithRoutes, userId)
 
         then:
@@ -169,8 +150,7 @@ class GroupServiceSpec extends Specification {
         noExceptionThrown()
 
         when: 'should patch keywords'
-        def groupWithKeywords = new Group()
-        groupWithKeywords.setKeywords(newKeywords)
+        def groupWithKeywords = Group.builder().keywords(newKeywords).build()
         groupService.patchGroup(groupId, groupWithKeywords, userId)
 
         then:
@@ -182,7 +162,7 @@ class GroupServiceSpec extends Specification {
         noExceptionThrown()
 
         when: 'group does not exist in mongo'
-        groupService.patchGroup(groupId, new Group(), userId)
+        groupService.patchGroup(groupId, Group.builder().build(), userId)
 
         then: 'should throw error'
         1 * groupRepository.findById(groupId) >> Optional.ofNullable(null)
@@ -192,7 +172,7 @@ class GroupServiceSpec extends Specification {
         groupDoesNotExistError.getMessage().contains('Group not found')
 
         when: 'userId from token does not match mongo'
-        groupService.patchGroup(groupId, new Group(), userId)
+        groupService.patchGroup(groupId, Group.builder().build(), userId)
 
         then: 'should throw error'
         1 * groupRepository.findById(groupId) >> Optional.of(groupWithWrongUserId)
@@ -203,6 +183,54 @@ class GroupServiceSpec extends Specification {
     }
 
     def 'should delete group'() {
-        // TODO
+        setup:
+        def groupId = '123'
+        def userId = '456'
+        def groupToDelete = Group.builder().userId(userId).build()
+        def groupToDeleteWithMismatchedUserId = Group.builder().userId('not456').build()
+
+        when:
+        groupService.deleteGroup(groupId, userId)
+
+        then:
+        1 * groupRepository.findById(groupId) >> Optional.of(groupToDelete)
+        1 * groupRepository.deleteById(groupId)
+
+        when: 'group does not exist'
+        groupService.deleteGroup(groupId, userId)
+
+        then: 'should throw error'
+        1 * groupRepository.findById(groupId) >> Optional.ofNullable(null)
+        0 * groupRepository.deleteById
+        def groupNotFoundError = thrown(ResponseStatusException)
+        groupNotFoundError.getStatus() == HttpStatus.NOT_FOUND
+        groupNotFoundError.getMessage().contains('Group not found')
+
+        when: 'group id does not match user id'
+        groupService.deleteGroup(groupId, userId)
+
+        then: 'should throw error'
+        1 * groupRepository.findById(groupId) >> Optional.of(groupToDeleteWithMismatchedUserId)
+        0 * groupRepository.deleteById
+        def notAuthorizedError = thrown(ResponseStatusException)
+        notAuthorizedError.getStatus() == HttpStatus.UNAUTHORIZED
+        notAuthorizedError.getMessage().contains(String.format("User not authorized to delete group with id %s", groupId))
+    }
+
+    def 'should delete user groups'() {
+        setup:
+        def userId = '123'
+        def groupsToDelete = List.of(Group.builder().build())
+
+        when:
+        groupService.deleteUserGroups(userId)
+
+        then:
+        1 * mongoOperations.find(
+                Query.query(Criteria.where(GroupFields.USER_ID).is(userId)),
+                Group.class,
+                Collections.GROUP
+        ) >> groupsToDelete
+        1 * groupRepository.deleteAll(groupsToDelete)
     }
 }

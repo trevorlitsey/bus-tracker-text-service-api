@@ -72,14 +72,11 @@ public class GroupService {
 
         if (!existingGroup.getUserId().equals(userId)) {
             throw new ResponseStatusException(
-                    HttpStatus.UNAUTHORIZED, String.format("User not allowed to modify group with id", id)
+                    HttpStatus.UNAUTHORIZED, String.format("User not allowed to modify group with id %s", id)
             );
         }
 
-        // TODO: reject if userId from group does not match userId from token
-
-
-        Group groupToUpdate = new Group();
+        Group groupToUpdate = Group.builder().build();
 
         BeanUtils.copyProperties(existingGroup, groupToUpdate);
 
@@ -119,5 +116,15 @@ public class GroupService {
         }
 
         groupRepository.deleteById(id);
+    }
+
+    public void deleteUserGroups(String userId) {
+        List<Group> groupsToDelete = mongoOperations.find(
+                Query.query(Criteria.where(GroupFields.USER_ID).is(userId)),
+                Group.class,
+                Collections.GROUP
+        );
+
+        groupRepository.deleteAll(groupsToDelete);
     }
 }
