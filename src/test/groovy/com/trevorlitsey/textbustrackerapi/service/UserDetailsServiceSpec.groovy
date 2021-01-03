@@ -8,14 +8,12 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.web.server.ResponseStatusException
 import spock.lang.Specification
 
-import java.net.http.HttpRequest
-
 class UserDetailsServiceSpec extends Specification {
-    GroupService groupService = Mock(GroupService);
+    GroupService groupService = Mock(GroupService)
 
-    PasswordConfig passwordConfig = Mock(PasswordConfig);
+    PasswordConfig passwordConfig = Mock(PasswordConfig)
 
-    UserService userService = Mock(UserService);
+    UserService userService = Mock(UserService)
 
     UserDetailsService userDetailsService = new UserDetailsService(groupService: groupService, passwordConfig: passwordConfig, userService: userService)
 
@@ -28,7 +26,7 @@ class UserDetailsServiceSpec extends Specification {
                 email,
                 password,
                 new ArrayList<>()
-        );
+        )
 
         when:
         def result = userDetailsService.loadUserByUsername(email)
@@ -54,12 +52,11 @@ class UserDetailsServiceSpec extends Specification {
         def phoneNumber = '123-456-7890'
         def encodedPassword = '123beepboopbeep'
         CreateUserRequest createdUser
-        def expectedCreatedUser = new CreateUserRequest(email, encodedPassword, phoneNumber)
         def expectedUserDetails =  new org.springframework.security.core.userdetails.User(
                 email,
                 password,
                 new ArrayList<>()
-        );
+        )
 
         when:
         def result = userDetailsService.createUser(new CreateUserRequest(email, password, phoneNumber))
