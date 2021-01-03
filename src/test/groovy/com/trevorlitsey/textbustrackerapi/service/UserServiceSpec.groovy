@@ -2,11 +2,10 @@ package com.trevorlitsey.textbustrackerapi.service
 
 import com.trevorlitsey.textbustrackerapi.constants.Collections
 import com.trevorlitsey.textbustrackerapi.constants.UserFields
-import com.trevorlitsey.textbustrackerapi.domain.users.CreateAccountRequest
+import com.trevorlitsey.textbustrackerapi.domain.users.CreateUserRequest
 import com.trevorlitsey.textbustrackerapi.domain.users.User
 import com.trevorlitsey.textbustrackerapi.repositories.UserRepository
 import com.trevorlitsey.textbustrackerapi.types.Permission
-import org.mockito.Mock
 import org.springframework.data.mongodb.core.MongoOperations
 import org.springframework.data.mongodb.core.query.Criteria
 import org.springframework.data.mongodb.core.query.Query
@@ -42,7 +41,7 @@ class UserServiceSpec extends Specification {
         def email = 'foo@foo.com'
         def password = '123xyz'
         def phoneNumber = '123-456-7890'
-        def createAccountRequest = new CreateAccountRequest(email, password, phoneNumber)
+        def createUserRequest = new CreateUserRequest(email, password, phoneNumber)
         def expectedUser = new User(
                 email,
                 password,
@@ -51,7 +50,7 @@ class UserServiceSpec extends Specification {
         )
 
         when:
-        def result = userService.createUser(createAccountRequest)
+        def result = userService.createUser(createUserRequest)
 
         then:
         1 * userRepository.insert(_ as User) >> {

@@ -1,7 +1,7 @@
 package com.trevorlitsey.textbustrackerapi.web.controller;
 
-import com.trevorlitsey.textbustrackerapi.domain.auth.DeleteAccountRequest;
-import com.trevorlitsey.textbustrackerapi.domain.users.CreateAccountRequest;
+import com.trevorlitsey.textbustrackerapi.domain.auth.DeleteUserRequest;
+import com.trevorlitsey.textbustrackerapi.domain.users.CreateUserRequest;
 import com.trevorlitsey.textbustrackerapi.domain.auth.AuthenticateRequest;
 import com.trevorlitsey.textbustrackerapi.domain.auth.AuthenticateResponse;
 import com.trevorlitsey.textbustrackerapi.service.AuthService;
@@ -23,13 +23,13 @@ public class AuthController {
         return authService.authenticate(authenticateRequest);
     }
 
-    @PostMapping("/create-account")
-    public AuthenticateResponse createAccount(@RequestBody CreateAccountRequest createAccountRequest) {
-         return authService.createAccount(createAccountRequest);
+    @PostMapping("/create-user")
+    public AuthenticateResponse createUser(@RequestBody CreateUserRequest createUserRequest) {
+         return authService.createUser(createUserRequest);
     }
 
-    @DeleteMapping("/delete-account")
-    public void deleteAccount(@RequestHeader(name = "Authorization") String authToken, @RequestBody DeleteAccountRequest deleteAccountRequest) {
-        authService.deleteAccount(deleteAccountRequest, authUtils.getUserIdFromToken(authToken));
+    @DeleteMapping("/delete-user")
+    public void deleteUser(@RequestHeader(name = "Authorization") String authToken, @RequestBody DeleteUserRequest deleteUserRequest) {
+        authService.deleteUser(deleteUserRequest, authUtils.getUserIdFromToken(authToken));
     }
 }

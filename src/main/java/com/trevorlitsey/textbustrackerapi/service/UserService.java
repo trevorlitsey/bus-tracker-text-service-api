@@ -2,7 +2,7 @@ package com.trevorlitsey.textbustrackerapi.service;
 
 import com.trevorlitsey.textbustrackerapi.constants.Collections;
 import com.trevorlitsey.textbustrackerapi.constants.UserFields;
-import com.trevorlitsey.textbustrackerapi.domain.users.CreateAccountRequest;
+import com.trevorlitsey.textbustrackerapi.domain.users.CreateUserRequest;
 import com.trevorlitsey.textbustrackerapi.domain.users.User;
 import com.trevorlitsey.textbustrackerapi.repositories.UserRepository;
 import com.trevorlitsey.textbustrackerapi.types.Permission;
@@ -35,8 +35,8 @@ public class UserService {
         );
     }
 
-    public User createUser(CreateAccountRequest createAccountRequest) {
-        User user = new User(createAccountRequest.getEmail(), createAccountRequest.getPassword() , createAccountRequest.getPhoneNumber(), List.of(Permission.USER));
+    public User createUser(CreateUserRequest createUserRequest) {
+        User user = new User(createUserRequest.getEmail(), createUserRequest.getPassword() , createUserRequest.getPhoneNumber(), List.of(Permission.USER));
         return userRepository.insert(user);
     }
 

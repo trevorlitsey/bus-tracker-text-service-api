@@ -1,7 +1,7 @@
 package com.trevorlitsey.textbustrackerapi.service;
 
-import com.trevorlitsey.textbustrackerapi.domain.auth.DeleteAccountRequest;
-import com.trevorlitsey.textbustrackerapi.domain.users.CreateAccountRequest;
+import com.trevorlitsey.textbustrackerapi.domain.auth.DeleteUserRequest;
+import com.trevorlitsey.textbustrackerapi.domain.users.CreateUserRequest;
 import com.trevorlitsey.textbustrackerapi.domain.auth.AuthenticateRequest;
 import com.trevorlitsey.textbustrackerapi.domain.auth.AuthenticateResponse;
 import com.trevorlitsey.textbustrackerapi.utils.JwtUtil;
@@ -33,12 +33,12 @@ public class AuthService {
     return new AuthenticateResponse(jwt);
   }
 
-  public AuthenticateResponse createAccount(CreateAccountRequest createAccountRequest) {
-    UserDetails userDetails = userDetailsService.createUser(createAccountRequest);
-    return authenticate(new AuthenticateRequest(userDetails.getUsername(), createAccountRequest.getPassword()));
+  public AuthenticateResponse createUser(CreateUserRequest createUserRequest) {
+    UserDetails userDetails = userDetailsService.createUser(createUserRequest);
+    return authenticate(new AuthenticateRequest(userDetails.getUsername(), createUserRequest.getPassword()));
   }
 
-  public void deleteAccount(DeleteAccountRequest deleteAccountRequest, String userId) {
-    userDetailsService.deleteAccount(deleteAccountRequest, userId);
+  public void deleteUser(DeleteUserRequest deleteUserRequest, String userId) {
+    userDetailsService.deleteUser(deleteUserRequest, userId);
   }
 }

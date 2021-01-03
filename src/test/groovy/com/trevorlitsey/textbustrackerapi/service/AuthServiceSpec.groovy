@@ -1,16 +1,12 @@
 package com.trevorlitsey.textbustrackerapi.service
 
 import com.trevorlitsey.textbustrackerapi.domain.auth.AuthenticateRequest
-import com.trevorlitsey.textbustrackerapi.domain.auth.DeleteAccountRequest
-import com.trevorlitsey.textbustrackerapi.domain.users.CreateAccountRequest
+import com.trevorlitsey.textbustrackerapi.domain.auth.DeleteUserRequest
+import com.trevorlitsey.textbustrackerapi.domain.users.CreateUserRequest
 import com.trevorlitsey.textbustrackerapi.utils.JwtUtil
-import org.mockito.InjectMocks
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
-import org.springframework.security.core.Authentication
-import org.springframework.security.core.AuthenticationException
 import org.springframework.security.core.userdetails.User
-import org.springframework.security.core.userdetails.UserDetails
 import spock.lang.Specification
 
 class AuthServiceSpec extends Specification {
@@ -58,12 +54,12 @@ class AuthServiceSpec extends Specification {
         e.getMessage() == 'oh no'
     }
 
-    def 'should create account'() {
+    def 'should create user'() {
         setup:
         def email = "foo@foo.com"
         def phoneNumber = "123-456-7890"
         def password = "abc123"
-        def createAccountRequest = new CreateAccountRequest(email, phoneNumber, password)
+        def createUserRequest = new CreateUserRequest(email, phoneNumber, password)
         def userDetails = new User(
                 email,
                 password,
@@ -72,10 +68,10 @@ class AuthServiceSpec extends Specification {
         def jwt = '123'
 
         when:
-        def result = authService.createAccount(createAccountRequest)
+        def result = authService.createUser(createUserRequest)
 
         then:
-        1 * userDetailsService.createUser(createAccountRequest) >> userDetails
+        1 * userDetailsService.createUser(createUserRequest) >> userDetails
         1 * authenticationManager.authenticate(_) >> {
             UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken -> {
                 usernamePasswordAuthenticationToken.getPrincipal() == email
@@ -89,15 +85,15 @@ class AuthServiceSpec extends Specification {
         noExceptionThrown()
     }
 
-    def 'should delete account'() {
+    def 'should delete user'() {
         setup:
         def userId = "123"
-        def deleteAccountRequest = new DeleteAccountRequest(userId)
+        def deleteUserRequest = new DeleteUserRequest(userId)
 
         when:
-        authService.deleteAccount(deleteAccountRequest, userId)
+        authService.deleteUser(deleteUserRequest, userId)
 
         then:
-        1 * userDetailsService.deleteAccount(deleteAccountRequest, userId)
+        1 * userDetailsService.deleteUser(deleteUserRequest, userId)
     }
 }

@@ -5,6 +5,6 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public class DeleteAccountRequest {
+public class DeleteUserRequest {
     private final String userId;
 }

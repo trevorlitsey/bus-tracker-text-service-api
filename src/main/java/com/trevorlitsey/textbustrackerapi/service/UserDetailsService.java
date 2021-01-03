@@ -1,7 +1,7 @@
 package com.trevorlitsey.textbustrackerapi.service;
 
-import com.trevorlitsey.textbustrackerapi.domain.auth.DeleteAccountRequest;
-import com.trevorlitsey.textbustrackerapi.domain.users.CreateAccountRequest;
+import com.trevorlitsey.textbustrackerapi.domain.auth.DeleteUserRequest;
+import com.trevorlitsey.textbustrackerapi.domain.users.CreateUserRequest;
 import com.trevorlitsey.textbustrackerapi.domain.users.User;
 import com.trevorlitsey.textbustrackerapi.utils.PasswordConfig;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,8 +39,8 @@ public class UserDetailsService implements org.springframework.security.core.use
         );
     }
 
-    public UserDetails createUser(CreateAccountRequest createAccountRequest) {
-        User existingUserWithEmail = userService.findUserByEmail(createAccountRequest.getEmail());
+    public UserDetails createUser(CreateUserRequest createUserRequest) {
+        User existingUserWithEmail = userService.findUserByEmail(createUserRequest.getEmail());
 
         if (existingUserWithEmail != null) {
             throw new ResponseStatusException(
@@ -48,18 +48,18 @@ public class UserDetailsService implements org.springframework.security.core.use
             );
         }
 
-        CreateAccountRequest createAccountRequestWithEncryptedPassword = new CreateAccountRequest(
-                createAccountRequest.getEmail(),
-                passwordConfig.encode(createAccountRequest.getPassword()),
-                createAccountRequest.getPhoneNumber()
+        CreateUserRequest createUserRequestWithEncryptedPassword = new CreateUserRequest(
+                createUserRequest.getEmail(),
+                passwordConfig.encode(createUserRequest.getPassword()),
+                createUserRequest.getPhoneNumber()
         );
 
-        User user = userService.createUser(createAccountRequestWithEncryptedPassword);
+        User user = userService.createUser(createUserRequestWithEncryptedPassword);
         return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(), new ArrayList<>());
     }
 
-    public void deleteAccount(DeleteAccountRequest deleteAccountRequest, String userId) {
-        String id = deleteAccountRequest.getUserId();
+    public void deleteUser(DeleteUserRequest deleteUserRequest, String userId) {
+        String id = deleteUserRequest.getUserId();
 
         if (!id.equals(userId)) {
             throw new ResponseStatusException(
@@ -67,7 +67,7 @@ public class UserDetailsService implements org.springframework.security.core.use
             );
         }
 
-        userService.deleteUser(deleteAccountRequest.getUserId());
+        userService.deleteUser(deleteUserRequest.getUserId());
         groupService.deleteUserGroups(userId);
     }
 }
