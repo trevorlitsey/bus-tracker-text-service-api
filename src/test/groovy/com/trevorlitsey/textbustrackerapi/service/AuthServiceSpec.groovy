@@ -1,7 +1,6 @@
 package com.trevorlitsey.textbustrackerapi.service
 
 import com.trevorlitsey.textbustrackerapi.domain.auth.AuthenticateRequest
-import com.trevorlitsey.textbustrackerapi.domain.auth.DeleteUserRequest
 import com.trevorlitsey.textbustrackerapi.domain.users.CreateUserRequest
 import com.trevorlitsey.textbustrackerapi.utils.JwtUtil
 import org.springframework.security.authentication.AuthenticationManager
@@ -88,12 +87,11 @@ class AuthServiceSpec extends Specification {
     def 'should delete user'() {
         setup:
         def userId = "123"
-        def deleteUserRequest = new DeleteUserRequest(userId)
 
         when:
-        authService.deleteUser(deleteUserRequest, userId)
+        authService.deleteUser(userId, userId)
 
         then:
-        1 * userDetailsService.deleteUser(deleteUserRequest, userId)
+        1 * userDetailsService.deleteUser(userId, userId)
     }
 }

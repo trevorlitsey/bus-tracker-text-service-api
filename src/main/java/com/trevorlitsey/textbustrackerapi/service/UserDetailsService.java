@@ -1,6 +1,5 @@
 package com.trevorlitsey.textbustrackerapi.service;
 
-import com.trevorlitsey.textbustrackerapi.domain.auth.DeleteUserRequest;
 import com.trevorlitsey.textbustrackerapi.domain.users.CreateUserRequest;
 import com.trevorlitsey.textbustrackerapi.domain.users.User;
 import com.trevorlitsey.textbustrackerapi.utils.PasswordConfig;
@@ -58,16 +57,14 @@ public class UserDetailsService implements org.springframework.security.core.use
         return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(), new ArrayList<>());
     }
 
-    public void deleteUser(DeleteUserRequest deleteUserRequest, String userId) {
-        String id = deleteUserRequest.getUserId();
-
+    public void deleteUser(String id, String userId) {
         if (!id.equals(userId)) {
             throw new ResponseStatusException(
                     HttpStatus.UNAUTHORIZED, String.format("User not authorized to delete user with id %s", id)
             );
         }
 
-        userService.deleteUser(deleteUserRequest.getUserId());
+        userService.deleteUser(id);
         groupService.deleteUserGroups(userId);
     }
 }

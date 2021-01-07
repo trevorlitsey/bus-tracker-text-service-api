@@ -1,6 +1,5 @@
 package com.trevorlitsey.textbustrackerapi.service;
 
-import com.trevorlitsey.textbustrackerapi.domain.auth.DeleteUserRequest;
 import com.trevorlitsey.textbustrackerapi.domain.users.CreateUserRequest;
 import com.trevorlitsey.textbustrackerapi.domain.auth.AuthenticateRequest;
 import com.trevorlitsey.textbustrackerapi.domain.auth.AuthenticateResponse;
@@ -14,13 +13,13 @@ import org.springframework.stereotype.Service;
 @Service
 public class AuthService {
   @Autowired
-  private AuthenticationManager authenticationManager;
+  AuthenticationManager authenticationManager;
 
   @Autowired
-  private UserDetailsService userDetailsService;
+  UserDetailsService userDetailsService;
 
   @Autowired
-  private JwtUtil jwtUtil;
+  JwtUtil jwtUtil;
 
   public AuthenticateResponse authenticate(AuthenticateRequest authenticateRequest) {
     authenticationManager
@@ -38,7 +37,7 @@ public class AuthService {
     return authenticate(new AuthenticateRequest(userDetails.getUsername(), createUserRequest.getPassword()));
   }
 
-  public void deleteUser(DeleteUserRequest deleteUserRequest, String userId) {
-    userDetailsService.deleteUser(deleteUserRequest, userId);
+  public void deleteUser(String id, String userId) {
+    userDetailsService.deleteUser(id, userId);
   }
 }

@@ -87,6 +87,26 @@ class UserDetailsServiceSpec extends Specification {
     }
 
     def 'should delete user'() {
-        // TODO
+        setup:
+        def userId = '123'
+
+        when:
+        def result = userDetailsService.deleteUser(userId, userId)
+
+        then:
+        result == null
+        1 * userService.deleteUser(userId)
+        1 * groupService.deleteUserGroups(userId)
+
+        when: 'user id from auth token does not match'
+        def userIdDoesNotMatchResult = userDetailsService.deleteUser(userId, 'not123')
+
+        then: 'should throw error'
+        userIdDoesNotMatchResult == null
+        0 * userService.deleteUser
+        0 * groupService.deleteUserGroups
+        def err = thrown(ResponseStatusException)
+        err.getStatus() == HttpStatus.UNAUTHORIZED
+        err.getMessage().contains(String.format("User not authorized to delete user with id %s", userId))
     }
 }
