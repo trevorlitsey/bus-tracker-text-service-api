@@ -1,5 +1,6 @@
 package com.trevorlitsey.textbustrackerapi.web.controller;
 
+import com.trevorlitsey.textbustrackerapi.constants.Headers;
 import com.trevorlitsey.textbustrackerapi.domain.users.CreateUserRequest;
 import com.trevorlitsey.textbustrackerapi.domain.auth.AuthenticateRequest;
 import com.trevorlitsey.textbustrackerapi.domain.auth.AuthenticateResponse;
@@ -28,7 +29,7 @@ public class AuthController {
     }
 
     @DeleteMapping("/delete-user/{id}")
-    public void deleteUser(@RequestHeader(name = "Authorization") String authToken, @PathVariable String id) {
+    public void deleteUser(@RequestHeader(name = Headers.AUTHORIZATION) String authToken, @PathVariable String id) {
         authService.deleteUser(id, authUtils.getUserIdFromToken(authToken));
     }
 }
