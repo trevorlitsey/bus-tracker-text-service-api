@@ -49,8 +49,7 @@ public class UserDetailsService implements org.springframework.security.core.use
 
         CreateUserRequest createUserRequestWithEncryptedPassword = new CreateUserRequest(
                 createUserRequest.getEmail(),
-                passwordConfig.encode(createUserRequest.getPassword()),
-                createUserRequest.getPhoneNumber()
+                passwordConfig.encode(createUserRequest.getPassword())
         );
 
         User user = userService.createUser(createUserRequestWithEncryptedPassword);

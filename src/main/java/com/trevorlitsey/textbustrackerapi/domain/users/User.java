@@ -6,6 +6,7 @@ import com.trevorlitsey.textbustrackerapi.types.Permission;
 import lombok.*;
 import org.springframework.data.mongodb.core.mapping.Field;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
@@ -22,6 +23,12 @@ public class User extends MongoDocument {
 
     @Field(UserFields.PHONE_NUMBER)
     private String phoneNumber;
+
+    @Field(UserFields.PHONE_NUMBER_REGISTRATION_TOKEN)
+    private String phoneNumberRegistrationToken;
+
+    @Field(UserFields.PHONE_NUMBER_REGISTRATION_TOKEN_EXPIRATION)
+    private LocalDateTime phoneNumberRegistrationTokenExpiration;
 
     @Field(UserFields.PERMISSIONS)
     private List<Permission> permissions;
