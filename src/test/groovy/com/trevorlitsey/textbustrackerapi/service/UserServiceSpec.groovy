@@ -40,12 +40,13 @@ class UserServiceSpec extends Specification {
         setup:
         def email = 'foo@foo.com'
         def password = '123xyz'
-        def phoneNumber = '123-456-7890'
-        def createUserRequest = new CreateUserRequest(email, password, phoneNumber)
+        def createUserRequest = new CreateUserRequest(email, password)
         def expectedUser = new User(
                 email,
                 password,
-                phoneNumber,
+                null,
+                null,
+                null,
                 List.of(Permission.USER)
         )
 
@@ -59,7 +60,6 @@ class UserServiceSpec extends Specification {
 
                     userToInsert.getEmail() == email
                     userToInsert.getPassword() == password
-                    userToInsert.getPhoneNumber() == phoneNumber
                     userToInsert.getPermissions() == List.of(Permission.USER)
                     return expectedUser
                 }

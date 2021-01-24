@@ -33,8 +33,7 @@ class AuthControllerSpec extends Specification {
         setup:
         def email = 'foo@foo.com'
         def password = 'passw0rd!'
-        def phoneNumber = '123-456-7890'
-        def createUserRequest = new CreateUserRequest(email, password, phoneNumber)
+        def createUserRequest = new CreateUserRequest(email, password)
         def authenticateResponse = new AuthenticateResponse('jwt123')
 
         when:

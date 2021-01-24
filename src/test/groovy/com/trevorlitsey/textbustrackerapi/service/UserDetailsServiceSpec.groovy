@@ -49,7 +49,7 @@ class UserDetailsServiceSpec extends Specification {
         setup:
         def email = 'foo@foo.com'
         def password = '123xyz'
-        def phoneNumber = '123-456-7890'
+
         def encodedPassword = '123beepboopbeep'
         CreateUserRequest createdUser
         def expectedUserDetails =  new org.springframework.security.core.userdetails.User(
@@ -59,22 +59,21 @@ class UserDetailsServiceSpec extends Specification {
         )
 
         when:
-        def result = userDetailsService.createUser(new CreateUserRequest(email, password, phoneNumber))
+        def result = userDetailsService.createUser(new CreateUserRequest(email, password))
 
         then:
         1 * userService.findUserByEmail(email) >> null
         1 * passwordConfig.encode(password) >> encodedPassword
         1 * userService.createUser(_) >> {
             createdUser = it[0]
-            return new User(email, password, phoneNumber, List.of())
+            return new User(email, password, null, null, null, List.of())
         }
         createdUser.getEmail() == email
         createdUser.getPassword() == encodedPassword
-        createdUser.getPhoneNumber() == phoneNumber
         result == expectedUserDetails
 
         when: 'user already exists'
-        def userAlreadyExistsResult = userDetailsService.createUser(new CreateUserRequest(email, password, phoneNumber))
+        def userAlreadyExistsResult = userDetailsService.createUser(new CreateUserRequest(email, password))
 
         then: 'should throw error'
         1 * userService.findUserByEmail(email) >> new User()

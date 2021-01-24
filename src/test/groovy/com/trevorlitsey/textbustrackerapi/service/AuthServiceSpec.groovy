@@ -56,9 +56,8 @@ class AuthServiceSpec extends Specification {
     def 'should create user'() {
         setup:
         def email = "foo@foo.com"
-        def phoneNumber = "123-456-7890"
         def password = "abc123"
-        def createUserRequest = new CreateUserRequest(email, phoneNumber, password)
+        def createUserRequest = new CreateUserRequest(email, password)
         def userDetails = new User(
                 email,
                 password,
