@@ -4,7 +4,6 @@ import com.trevorlitsey.textbustrackerapi.constants.GroupFields;
 import com.trevorlitsey.textbustrackerapi.domain.shared.MongoDocument;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.mongodb.core.mapping.Field;
 

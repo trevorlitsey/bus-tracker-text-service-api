@@ -60,15 +60,15 @@ public class GroupService {
     }
 
     public Group patchGroup (String id, Group group, String userId) {
-        Optional<Group> optionalRoutineToUpdate = groupRepository.findById(id);
+        Optional<Group> optionalGroupToUpdate = groupRepository.findById(id);
 
-        if (optionalRoutineToUpdate.isEmpty()) {
+        if (optionalGroupToUpdate.isEmpty()) {
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND, "Group not found"
             );
         }
 
-        Group existingGroup = optionalRoutineToUpdate.get();
+        Group existingGroup = optionalGroupToUpdate.get();
 
         if (!existingGroup.getUserId().equals(userId)) {
             throw new ResponseStatusException(

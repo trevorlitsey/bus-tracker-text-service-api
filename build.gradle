@@ -7,7 +7,6 @@ plugins {
 
 group = 'com.trevorlitsey'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '11'
 
 configurations {
 	compileOnly {
@@ -20,7 +19,6 @@ repositories {
 }
 
 dependencies {
-	annotationProcessor 'org.projectlombok:lombok'
 
 	// swagger
 	compile 'io.springfox:springfox-swagger-ui:3.0.0'
@@ -35,7 +33,15 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-rest'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.security:spring-security-test'
-	testImplementation('org.springframework.boot:spring-boot-starter-test')
+	implementation 'org.springframework.cloud:spring-cloud-starter-openfeign:3.0.0'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+	// sms
+	implementation 'com.twilio.sdk:twilio:8.6.0'
+
+	// helpers
+	annotationProcessor 'org.projectlombok:lombok'
+	compile 'org.apache.commons:commons-lang3:3.0'
 
 	// groovy
 	implementation 'org.codehaus.groovy:groovy:3.0.5'
