@@ -25,9 +25,17 @@ public class GroupService {
     @Autowired
     MongoOperations mongoOperations;
 
-    public List<Group> findAllGroups(String userId) {
+    public List<Group> findUserGroups(String userId) {
         return mongoOperations.find(
                 Query.query(Criteria.where(GroupFields.USER_ID).is(userId)),
+                Group.class,
+                Collections.GROUP
+        );
+    }
+
+    public List<Group> findUserGroupsByUserIdAndKeyword(String userId, String keyword) {
+        return mongoOperations.find(
+                Query.query(Criteria.where(GroupFields.USER_ID).is(userId).and(GroupFields.KEYWORDS).in(keyword)),
                 Group.class,
                 Collections.GROUP
         );

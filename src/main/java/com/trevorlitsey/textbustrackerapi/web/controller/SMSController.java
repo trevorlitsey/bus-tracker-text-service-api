@@ -1,9 +1,6 @@
 package com.trevorlitsey.textbustrackerapi.web.controller;
 
-import com.trevorlitsey.textbustrackerapi.domain.sms.SMSRequest;
 import com.trevorlitsey.textbustrackerapi.service.SMSService;
-import com.twilio.twiml.MessagingResponse;
-import com.twilio.twiml.messaging.Body;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,6 +17,6 @@ public class SMSController {
 
     @PostMapping
     public String receiveSMS(@RequestBody String req) throws IOException {
-        return smsService.receiveSMS(req);
+        return smsService.getDeparturesFromSMS(req);
     }
 }

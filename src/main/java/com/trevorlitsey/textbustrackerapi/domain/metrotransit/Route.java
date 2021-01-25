@@ -7,11 +7,8 @@ import lombok.Getter;
 @Getter
 public class Route {
     @JsonSetter(MetroTransitFields.DESCRIPTION)
-    String description;
-
-    @JsonSetter(MetroTransitFields.PROVIDER_ID)
-    String providerId;
+    String label;
 
     @JsonSetter(MetroTransitFields.ROUTE)
-    String route;
+    String value;
 }

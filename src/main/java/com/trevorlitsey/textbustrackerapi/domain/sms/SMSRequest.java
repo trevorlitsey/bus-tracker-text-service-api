@@ -7,7 +7,7 @@ import java.util.*;
 public class SMSRequest {
     Map<String, String> properties;
 
-    public SMSRequest(String req) throws IOException {
+    public SMSRequest(String req) {
         HashMap<String, String> properties = new HashMap<>();
 
         Arrays.stream(req.split("&")).forEach(keyValue -> {
@@ -29,7 +29,7 @@ public class SMSRequest {
         return properties.get("From");
     }
 
-    public String getMessage() {
-        return properties.get("Message");
+    public String getBody() {
+        return properties.get("Body");
     }
 }

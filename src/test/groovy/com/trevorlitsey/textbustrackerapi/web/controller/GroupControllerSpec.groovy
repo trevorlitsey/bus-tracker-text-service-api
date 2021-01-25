@@ -29,7 +29,7 @@ class GroupControllerSpec extends Specification {
 
         then:
         1 * authUtils.getUserIdFromToken(authToken) >> userId
-        1 * groupService.findAllGroups(userId) >> groups
+        1 * groupService.findUserGroups(userId) >> groups
         result == groups
     }
 

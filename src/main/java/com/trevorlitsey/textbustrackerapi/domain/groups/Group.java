@@ -2,9 +2,7 @@ package com.trevorlitsey.textbustrackerapi.domain.groups;
 
 import com.trevorlitsey.textbustrackerapi.constants.GroupFields;
 import com.trevorlitsey.textbustrackerapi.domain.shared.MongoDocument;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.util.List;
@@ -12,6 +10,8 @@ import java.util.List;
 @Builder
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Group extends MongoDocument {
     @Field(GroupFields.NAME)
     private String name;

@@ -28,7 +28,7 @@ public class GroupController {
 
     @GetMapping
     public List<Group> getGroups(@RequestHeader(name = Headers.AUTHORIZATION) String authToken) {
-        return groupService.findAllGroups(authUtils.getUserIdFromToken(authToken));
+        return groupService.findUserGroups(authUtils.getUserIdFromToken(authToken));
     }
 
     @PostMapping

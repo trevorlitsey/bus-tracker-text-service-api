@@ -40,6 +40,14 @@ public class UserService {
         );
     }
 
+    public User findUserByPhoneNumber(String phoneNumber) {
+        return mongoOperations.findOne(
+                Query.query(Criteria.where(UserFields.PHONE_NUMBER).is(phoneNumber)),
+                User.class,
+                Collections.USER
+        );
+    }
+
     public User createUser(CreateUserRequest createUserRequest) {
         User user = User
                 .builder()
@@ -109,7 +117,7 @@ public class UserService {
     }
 
     private String getUniquePhoneNumberRegistrationToken() {
-        String token = RandomStringUtils.random(4);
+        String token = RandomStringUtils.random(4, true, true);
 
         User userWithToken = mongoOperations.findOne(
                 Query.query(Criteria.where(UserFields.PHONE_NUMBER_REGISTRATION_TOKEN).is(token)),

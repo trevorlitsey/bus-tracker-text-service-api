@@ -26,7 +26,7 @@ class GroupServiceSpec extends Specification {
         def groups = List.of(Group.builder().build())
 
         when:
-        def result = groupService.findAllGroups(userId)
+        def result = groupService.findUserGroups(userId)
 
         then:
         1 * mongoOperations.find(

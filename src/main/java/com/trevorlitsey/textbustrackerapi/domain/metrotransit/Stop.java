@@ -7,7 +7,7 @@ import lombok.Getter;
 @Getter
 public class Stop {
     @JsonSetter(MetroTransitFields.TEXT)
-    String text;
+    String label;
 
     @JsonSetter(MetroTransitFields.VALUE)
     String value;
