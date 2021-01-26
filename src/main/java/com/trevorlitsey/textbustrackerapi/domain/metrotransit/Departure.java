@@ -2,8 +2,10 @@ package com.trevorlitsey.textbustrackerapi.domain.metrotransit;
 
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.trevorlitsey.textbustrackerapi.constants.MetroTransitFields;
+import lombok.Builder;
 import lombok.Getter;
 
+@Builder
 @Getter
 public class Departure {
     @JsonSetter(MetroTransitFields.ACTUAL)

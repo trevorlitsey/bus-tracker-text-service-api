@@ -9,7 +9,6 @@ import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -32,7 +31,7 @@ public class SMSService {
         SMSRequest smsRequest = new SMSRequest(req);
 
         String phoneNumber = smsRequest.getFrom();
-        String keyword = ObjectUtils.defaultIfNull(smsRequest.getBody(), "") .trim();
+        String keyword = ObjectUtils.defaultIfNull(smsRequest.getBody(), "").trim();
 
         User user = userService.findUserByPhoneNumber(phoneNumber);
 
@@ -53,7 +52,7 @@ public class SMSService {
         StringBuilder msg = new StringBuilder();
 
         for (Group group : groups) {
-            msg.append(formatDepartures(group)).append("\n");
+            msg.append(formatDepartures(group));
         }
 
         return msg.toString();
@@ -64,8 +63,8 @@ public class SMSService {
 
         for (Route route : group.getRoutes()) {
             departuresString.append(route.getRoute().getLabel()).append("\n");
-            departuresString.append(route.getStop().getLabel()).append("\n");
             departuresString.append(route.getDirection().getLabel()).append("\n");
+            departuresString.append(route.getStop().getLabel()).append("\n");
             departuresString.append("--" + "\n");
 
             List<Departure> departures = metroTransitService.getDepartures(
@@ -74,10 +73,12 @@ public class SMSService {
                     route.getStop().getValue()
             );
 
-            departuresString.append(departures
-                    .stream()
-                    .map(Departure::getDepartureText)
-                    .collect(Collectors.joining(", "))).append("\n\n");
+            departuresString.append(
+                    departures.isEmpty() ? "No upcoming departures" : departures
+                            .stream()
+                            .map(Departure::getDepartureText)
+                            .collect(Collectors.joining(", "))
+            ).append("\n\n");
         }
 
         return departuresString.toString();
