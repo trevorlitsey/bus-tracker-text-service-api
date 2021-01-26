@@ -5,8 +5,7 @@ import com.trevorlitsey.textbustrackerapi.domain.groups.Route;
 import com.trevorlitsey.textbustrackerapi.domain.metrotransit.Departure;
 import com.trevorlitsey.textbustrackerapi.domain.sms.SMSRequest;
 import com.trevorlitsey.textbustrackerapi.domain.users.User;
-import com.twilio.twiml.MessagingResponse;
-import com.twilio.twiml.messaging.Body;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -29,11 +28,11 @@ public class SMSService {
         return userService.registerUserPhoneNumber(token, phoneNumber);
     }
 
-    public String getDeparturesFromSMS(String req) throws IOException {
+    public String getDeparturesFromSMS(String req) {
         SMSRequest smsRequest = new SMSRequest(req);
 
         String phoneNumber = smsRequest.getFrom();
-        String keyword = smsRequest.getBody().trim();
+        String keyword = ObjectUtils.defaultIfNull(smsRequest.getBody(), "") .trim();
 
         User user = userService.findUserByPhoneNumber(phoneNumber);
 
