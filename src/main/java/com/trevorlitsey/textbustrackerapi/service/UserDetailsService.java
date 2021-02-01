@@ -43,7 +43,7 @@ public class UserDetailsService implements org.springframework.security.core.use
 
         if (existingUserWithEmail != null) {
             throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST, String.format("Email %s already registered", createUserRequest.getEmail())
+                    HttpStatus.BAD_REQUEST, String.format("Email %s is already registered", createUserRequest.getEmail())
             );
         }
 
