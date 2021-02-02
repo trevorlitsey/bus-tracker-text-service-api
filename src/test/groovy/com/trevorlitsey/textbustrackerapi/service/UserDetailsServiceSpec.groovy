@@ -82,7 +82,7 @@ class UserDetailsServiceSpec extends Specification {
         userAlreadyExistsResult == null
         def err = thrown(ResponseStatusException)
         err.getStatus() == HttpStatus.BAD_REQUEST
-        err.getMessage().contains(String.format("Email %s already registered", email))
+        err.getMessage().contains(String.format("Email %s is already registered", email))
     }
 
     def 'should delete user'() {
