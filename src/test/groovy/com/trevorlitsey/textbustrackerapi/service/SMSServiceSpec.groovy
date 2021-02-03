@@ -93,9 +93,9 @@ class SMSServiceSpec extends Specification {
         def stopValue = "46-and-grand"
         def group = Group.builder().routes(List.of(
                 new Route(
-                        new RouteData(routeLabel, routeValue),
-                        new RouteData(directionLabel, directionValue),
-                        new RouteData(stopLabel, stopValue)
+                        new RouteData(routeLabel, routeLabel, routeValue),
+                        new RouteData(directionLabel, directionLabel, directionValue),
+                        new RouteData(stopLabel, stopLabel, stopValue)
                 )
         )).build()
         def expected =
@@ -136,9 +136,9 @@ class SMSServiceSpec extends Specification {
         def stopValue = "46-and-grand"
         def group = Group.builder().routes(List.of(
                 new Route(
-                        new RouteData(routeLabel, routeValue),
-                        new RouteData(directionLabel, directionValue),
-                        new RouteData(stopLabel, stopValue)
+                        new RouteData('foo', routeLabel, routeValue),
+                        new RouteData('foo', directionLabel, directionValue),
+                        new RouteData('foo', stopLabel, stopValue)
                 )
         )).build()
         def departureText1 = "4m"
@@ -183,14 +183,14 @@ class SMSServiceSpec extends Specification {
         def stopValue = "46-and-grand"
         def group = Group.builder().routes(List.of(
                 new Route(
-                        new RouteData(routeLabel, routeValue),
-                        new RouteData(directionLabel, directionValue),
-                        new RouteData(stopLabel, stopValue)
+                        new RouteData('foo', routeLabel, routeValue),
+                        new RouteData('foo', directionLabel, directionValue),
+                        new RouteData('foo', stopLabel, stopValue)
                 ),
                 new Route(
-                        new RouteData(routeLabel, routeValue),
-                        new RouteData(directionLabel, directionValue),
-                        new RouteData(stopLabel, stopValue)
+                        new RouteData('foo', routeLabel, routeValue),
+                        new RouteData('foo', directionLabel, directionValue),
+                        new RouteData('foo', stopLabel, stopValue)
                 )
         )).build()
         def departureText1 = "4m"

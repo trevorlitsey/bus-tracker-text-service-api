@@ -43,9 +43,9 @@ class GroupServiceSpec extends Specification {
         def name = 'foo'
         def routes = List.of(
                 new Route(
-                        new RouteData('foo', 'bar'),
-                        new RouteData('foo', 'bar'),
-                        new RouteData('foo', 'bar')
+                        new RouteData('foo', 'bar', 'baz'),
+                        new RouteData('foo', 'bar', 'baz'),
+                        new RouteData('foo', 'bar', 'baz')
                 )
         )
         def keywords = List.of('foo')
@@ -112,9 +112,9 @@ class GroupServiceSpec extends Specification {
         def newName = 'foo'
         def newRoutes = List.of(
                 new Route(
-                        new RouteData('foo', 'bar'),
-                        new RouteData('foo', 'bar'),
-                        new RouteData('foo', 'bar')
+                        new RouteData('foo', 'bar', 'baz'),
+                        new RouteData('foo', 'bar', 'baz'),
+                        new RouteData('foo', 'bar', 'baz')
                 )
         )
         def newKeywords = List.of('foo')

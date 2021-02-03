@@ -62,9 +62,9 @@ public class SMSService {
         StringBuilder departuresString = new StringBuilder();
 
         for (Route route : group.getRoutes()) {
-            departuresString.append(route.getRoute().getLabel()).append("\n");
-            departuresString.append(route.getDirection().getLabel()).append("\n");
-            departuresString.append(route.getStop().getLabel()).append("\n");
+            departuresString.append(route.getRoute().getUserLabel()).append("\n");
+            departuresString.append(route.getDirection().getUserLabel()).append("\n");
+            departuresString.append(route.getStop().getUserLabel()).append("\n");
             departuresString.append("--" + "\n");
 
             List<Departure> departures = metroTransitService.getDepartures(
